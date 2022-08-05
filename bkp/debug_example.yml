@@ -1,0 +1,13 @@
+# this is an example for debugging task
+- name: Debug Example env PATH 
+  hosts: all
+
+  tasks:
+  - name: Store PATH
+    win_shell: |
+      $Env:Path
+    register: result
+
+  - name: Print debug message
+    debug:
+     var: result

@@ -1,0 +1,161 @@
+[
+  {
+    "name": "Creates all necessary folders and files for jenkins and Test frameworks",
+    "tasks": [
+      {
+        "name": "Create temp directory",
+        "win_file": {
+          "path": "C:\\temp",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create Jenkins directory structure",
+        "win_file": {
+          "path": "C:\\Jenkins",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create license directory",
+        "win_file": {
+          "path": "C:\\license",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create script directory",
+        "win_file": {
+          "path": "C:\\scripts",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Copy license to remote win host",
+        "win_copy": {
+          "src": "/etc/ansible/roles/common/files/windows/license.xml",
+          "dest": "C:\\license"
+        }
+      },
+      {
+        "name": "Copy run_4gl2js jenkins specific file",
+        "win_copy": {
+          "src": "/etc/ansible/roles/common/files/windows/run_4gl2js.bat",
+          "dest": "C:\\scripts"
+        }
+      },
+      {
+        "name": "Create testsuite 4gl2js folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\test_or_js",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create testsuite unittestframework folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\test_or",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create jsonrpc testsuite folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\jsonrpc_tests",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create webgen folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\or_webgen",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create webgen tests folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\or_webgen_tests",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create workspace folder for webgen",
+        "win_file": {
+          "path": "C:\\Jenkins\\WebGen_Testing_Workspace",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create change_charset folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\change_charset",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create Testcomplete folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create TC subfolder 32",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace\\32",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create TC subfolder 64",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace\\64",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create TC subfolder daily_staging",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace\\daily_staging",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create TC_Jenkins repo folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace\\TC_Jenkins",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create TC14_Project repo folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\TC14_testing_workspace\\TC14_Project",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Copy jenkin files to TC14_testing_workspace",
+        "win_copy": {
+          "src": "/etc/ansible/roles/common/files/windows/TC/",
+          "dest": "C:\\Jenkins\\TC14_testing_workspace"
+        }
+      },
+      {
+        "name": "Create installers binary check folder",
+        "win_file": {
+          "path": "C:\\Jenkins\\installersbinary_check",
+          "state": "directory"
+        }
+      },
+      {
+        "name": "Create workspace directory for jenkins",
+        "win_file": {
+          "path": "C:\\Jenkins\\workspace",
+          "state": "directory"
+        }
+      }
+    ]
+  }
+]

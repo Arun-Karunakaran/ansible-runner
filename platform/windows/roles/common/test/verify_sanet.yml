@@ -1,0 +1,162 @@
+---
+#
+#
+- name: Extract sanetpath
+  set_fact:
+    or620_64bit_sanet_path: '{{ item.winenvpath.or620_64bit_sanet_path }}'
+    or620_32bit_sanet_path: '{{ item.winenvpath.or620_32bit_sanet_path }}'
+    or111_32bit_sanet_path: '{{ item.winenvpath.or111_32bit_sanet_path }}'
+    or111_32bit_beta_sanet_path: '{{item.winenvpath.or111_32bit_beta_sanet_path }}'
+    or111_32bit_eval_sanet_path: '{{item.winenvpath.or111_32bit_eval_sanet_path }}'
+    or111_64bit_sanet_path: '{{ item.winenvpath.or111_64bit_sanet_path }}'
+    or111_64bit_beta_sanet_path: '{{ item.winenvpath.or111_64bit_beta_sanet_path }}'
+    or111_64bit_eval_sanet_path: '{{ item.winenvpath.or111_64bit_eval_sanet_path }}'
+    or112_32bit_sanet_path: '{{ item.winenvpath.or112_32bit_sanet_path }}'
+    or112_32bit_beta_sanet_path: '{{ item.winenvpath.or112_32bit_beta_sanet_path }}'
+    or112_32bit_eval_sanet_path: '{{ item.winenvpath.or112_32bit_eval_sanet_path }}'
+    or112_64bit_sanet_path: '{{ item.winenvpath.or112_64bit_sanet_path }}'
+    or112_64bit_beta_sanet_path: '{{ item.winenvpath.or112_64bit_beta_sanet_path }}'
+    or112_64bit_eval_sanet_path: '{{ item.winenvpath.or112_64bit_eval_sanet_path }}'
+    lnr111_32bit_sanet_path: '{{ item.winenvpath.lnr111_32bit_sanet_path }}'
+    lnr111_64bit_sanet_path: '{{ item.winenvpath.lnr111_64bit_sanet_path }}'
+    lnr112_32bit_sanet_path: '{{ item.winenvpath.lnr112_32bit_sanet_path }}'
+    lnr112_64bit_sanet_path: '{{ item.winenvpath.lnr112_64bit_sanet_path }}'
+  with_items: 
+    - "{{ lnrenvpath }}"
+    - "{{ orenvpath }}"
+  tags:
+    - always
+#OpenROAD 6.2
+
+- name: Check whether an OpenROAD6.2 64bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 6.2 64bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or620_64bit_sanet_path']
+  tags:
+    - or62
+
+- name: Check whether an OpenROAD6.2 32bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 6.2 32bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or620_32bit_sanet_path']
+  tags:
+    - or62
+
+# OpenROAD 11.1
+
+- name: Check whether an OpenROAD11.1 32bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 11.1 32bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_32bit_sanet_path']
+  tags:
+    - or111
+
+- name: Check whether an OpenROAD11.1 32bit SA/Net beta  is already installed
+  debug:
+    msg: "OpenROAD 11.1 32bit SA/NET beta is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_32bit_beta_sanet_path']
+  tags:
+    - or111
+
+- name: Check whether an OpenROAD11.1 32bit SA/Net eval  is already installed
+  debug:
+    msg: "OpenROAD 11.1 32bit SA/NET eval is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_32bit_eval_sanet_path']
+  tags:
+    - or111
+
+- name: Check whether an OpenROAD11.1 64bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 11.1 64bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_64bit_sanet_path']
+  tags:
+    - or111
+
+- name: Check whether an OpenROAD11.1 64bit beta SA/Net beta  is already installed
+  debug:
+    msg: "OpenROAD 11.1 64bit SA/NET beta is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_64bit_beta_sanet_path']
+  tags:
+    - or111
+    
+- name: Check whether an OpenROAD11.1 64bit SA/Net eval  is already installed
+  debug:
+    msg: "OpenROAD 11.1 64bit SA/NET eval is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or111_64bit_eval_sanet_path']
+  tags:
+    - or111
+    
+# OpenROAD 11.2
+
+- name: Check whether an OpenROAD11.2 32bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 11.2 32bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_32bit_sanet_path']
+  tags:
+    - or112
+    
+- name: Check whether an OpenROAD11.2 32bit SA/Net beta  is already installed
+  debug:
+    msg: "OpenROAD 11.2 32bit SA/NET beta is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_32bit_beta_sanet_path']
+  tags:
+    - or112
+    
+- name: Check whether an OpenROAD11.2 32bit SA/Net eval  is already installed
+  debug:
+    msg: "OpenROAD 11.2 32bit SA/NET eval is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_32bit_eval_sanet_path']
+  tags:
+    - or112
+    
+- name: Check whether an OpenROAD11.2 64bit SA/Net is already installed
+  debug:
+    msg: "OpenROAD 11.2 64bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_64bit_sanet_path']
+  tags:
+    - or112
+    
+- name: Check whether an OpenROAD11.2 64bit beta SA/Net beta  is already installed
+  debug:
+    msg: "OpenROAD 11.2 64bit SA/NET beta is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_64bit_beta_sanet_path']
+  tags:
+    - or112
+    
+- name: Check whether an OpenROAD11.2 64bit SA/Net eval  is already installed
+  debug:
+    msg: "OpenROAD 11.2 64bit SA/NET eval is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['or112_64bit_eval_sanet_path']
+  tags:
+    - or112
+    
+# LoadnRun 11.1
+
+- name: Check whether an LoadnRun11.1 32bit SA/Net is already installed
+  debug:
+    msg: "LoadnRun 11.1 32bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr111_32bit_sanet_path']
+  tags:
+    - lnr111
+    
+- name: Check whether an LoadnRun11.1 64bit SA/Net is already installed
+  debug:
+    msg: "LoadnRun 11.1 64bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr111_64bit_sanet_path']
+  tags:
+    - lnr111
+# LoadnRun 11.2
+
+- name: Check whether an LoadnRun11.2 32bit SA/Net is already installed
+  debug:
+    msg: "LoadnRun 11.2 32bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr112_32bit_sanet_path']
+  tags:
+    - lnr112
+
+- name: Check whether an LoadnRun11.2 64bit SA/Net is already installed
+  debug:
+    msg: "LoadnRun 11.2 64bit SA/NET is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr112_64bit_sanet_path']
+  tags:
+    - lnr112

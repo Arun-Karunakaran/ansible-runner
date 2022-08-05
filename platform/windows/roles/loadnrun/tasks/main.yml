@@ -1,0 +1,115 @@
+---
+# 
+#
+- include_tasks: '{{get_proj_plfm_win}}/roles/common/handlers/extractdata_or.yml'
+  tags: 
+    - always
+
+- name: Debug envpath
+  debug:
+    msg: "{{ item.value }}"
+  with_dict: "{{ envpath }}"
+  tags:
+    - debug
+
+- name: Check for existing  installation from registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/meta/collect_registries_loadnrun.yml'
+  tags: 
+    - statregistries
+
+- name: set "PACKAGE_PATCHNO"
+  set_fact:
+    PACKAGE_PATCHNO: '{{hostvars[inventory_hostname]["ProductVersion"][0].split(".").3}}'
+  when: hostvars[inventory_hostname]['ProductVersion'] != "[AnsibleUndefined]"
+
+- name: Extract patchno
+  set_fact:
+    or_upgrade_patchno: '{{ hostvars[inventory_hostname]["edition"].split("p").1 }}'
+    or_current_patchno: '{{ hostvars[inventory_hostname]["PACKAGE_PATCHNO"]}}'
+  when: hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") and hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]['II_SYSTEM'] != "[AnsibleUndefined]"
+
+- debug:
+    msg: "{{ item }}"
+  with_items:
+    - "{{ or_upgrade_patchno }}"
+    - "{{ or_current_patchno }}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'] != "[AnsibleUndefined]"
+  tags:
+    - debug
+
+- name: Verify SA/Net already installed
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/test/verify_sanet.yml'
+  tags:
+    - always
+
+# - name: Compare the SA/Net installed patch with current patch for upgrade 
+#   debug:
+#     msg: "The current installed patch is {{hostvars[inventory_hostname]['PACKAGE_PATCHNO']}} will be upgrade to {{hostvars[inventory_hostname]['or_upgrade_patchno']}}"
+#     when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"]|int < hostvars[inventory_hostname]['or_upgrade_patchno']|int
+#   tags:
+#     - patchupgrade
+
+# - name: set "II_SYSTEM"
+#   set_fact:
+#     II_SYSTEM: '{{hostvars[inventory_hostname]["InstallationFolder"]}}'
+#   when: hostvars[inventory_hostname]['II_SYSTEM'] == "[AnsibleUndefined]"
+
+- name: uninstalls the product loadnrun previously installed
+  raw: msiexec.exe /qn /x "{{ hostvars[inventory_hostname]['PRODUCTCODE'][0] }}"
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  tags: [install, cleaninstall]
+
+
+- name: ReCheck for product installation in registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/meta/collect_registries_loadnrun.yml'
+  tags: 
+    - statregistries
+
+- name: set "PACKAGE_PATCHNO"
+  set_fact:
+    PACKAGE_PATCHNO: "{{[AnsibleUndefined]}}"
+  when: hostvars[inventory_hostname]['ProductVersion'] == "[AnsibleUndefined]"
+    
+- debug:
+    msg: "{{ hostvars[inventory_hostname]['PACKAGE_PATCHNO'] }}"
+  tags:
+    - debug
+
+# - meta: end_play
+
+- name: copies '{{filename}}' to remote node 
+  win_copy: 
+    src: '/mnt/{{hostvars[inventory_hostname]["file_path"]}}/{{filename}}'
+    dest: C:\temp\
+  tags:
+    - always
+
+- win_find:
+    paths: C:\temp\
+    patterns: '*.zip'
+  register: zipresult
+  tags: 
+    - debug
+
+- name: Verify for .zip files
+  fail:
+    msg: "No files found."
+  when: zipresult.matched == 0
+  tags: 
+    - debug
+
+- name: Unzips the '{{filename}}' on remote node
+  win_unzip:
+    src: C:\temp\{{filename}}
+    dest: C:\temp\
+    delete_archive: yes
+  tags:
+    - always
+
+- name: deploy tasks
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/handlers/deploy_handlers_loadnrun_{{feature}}.yml'
+
+#  - name: "Restart Windows"
+#    win_reboot:

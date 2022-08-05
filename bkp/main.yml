@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Install required software if not installed for windows",
+    "hosts": "all",
+    "gather_facts": true,
+    "vars": {
+      "get_proj_dir": "{{ lookup('env','ANSIBLE_PROJ_ROOT_DIR') }}",
+      "envpath": "{{ lookup('file', '{{get_proj_dir}}/roles/common/vars/external_vars.yml') | from_yaml }}"
+    },
+    "tasks": [
+      {
+        "name": "ping task",
+        "include_tasks": "win_ping.yml",
+        "when": "ansible_facts['os_family'] == \"windows\""
+      },
+      {
+        "name": "Install Prerequisites on Node",
+        "include_tasks": "{{item}}",
+        "with_items": [
+          "{{get_proj_dir}}/roles/common/tasks/install-cygwin64.yml",
+          "{{get_proj_dir}}/roles/common/tasks/install-git.yml",
+          "{{get_proj_dir}}/roles/common/tasks/install-jre.yml",
+          "{{get_proj_dir}}/roles/common/tasks/install-python.yml",
+          "{{get_proj_dir}}/roles/common/tasks/install-tomcat.yml"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,78 @@
+---
+# roles/prerequisites/tasks/install-cygwin64.yml
+# This file installs required cygwin version on windows
+
+- name: Debug envpath
+  debug:
+    msg: "{{ item.value }}"
+  with_dict: "{{ envpath }}"
+
+- name: Print only the envpath for cygwin
+  debug:
+    msg: "{{ lookup('items', item.winenvpath.cygwin_path) }}"
+  with_items: "{{ envpath }}"
+
+- name: Determine if cygwin is installed
+  win_command: cygcheck
+  register: validatecygcheck
+  ignore_errors: true
+#    when: 'is not recognized' in validatecygcheck.stderr
+
+- name: Print previous step result
+  debug:
+    var: validatecygcheck
+    verbosity: 2
+
+- name: States the Cygiwn64 bit installations
+  debug:
+    msg: "Latest Cygwin64 already installed"
+  when: validatecygcheck.rc == 1
+
+- name: Copies install_cygwin64.ps1 file to remote
+  win_copy:
+    src: '{{get_proj_plfm_win}}/roles/prerequisites/files/install_cygwin64.ps1'
+    dest: C:\temp
+  when: validatecygcheck.rc == 2 or ( "Could not find file 'cygcheck.exe'" in validatecygcheck.msg
+    )
+
+- name: Installs cygwin64 on remote windows
+  win_shell: |
+    Write-Host "Installing Cygwin x64..." -ForegroundColor Cyan
+    if(Test-Path C:\cygwin64) { 
+         Write-Host "Deleting existing installation..." Remove-Item C:\cygwin64 -Recurse -Force 
+    }
+    New-Item -Path C:\cygwin64 -ItemType Directory -Force
+    $exePath = "C:\cygwin64\setup-x86_64.exe"
+    (New-Object Net.WebClient).DownloadFile('https://cygwin.com/setup-x86_64.exe', $exePath)
+    cmd /c start /wait $exePath -qnNdO -R C:/cygwin64 -s http://cygwin.mirror.constant.com -l C:/cygwin64/var/cache/setup -P bash -P flex -P unzip -P cpio -P diffutils -P patch -P dos2unix -P ctags -P gawk -P sed -P grep -P wget -P curl
+    C:\cygwin64\bin\bash -lc true
+    Write-Host "Installed Cygwin x64" -ForegroundColor Green
+  become: true
+  become_method: runas
+  become_user: Administrator
+  when: validatecygcheck.rc == 2
+
+- name: Determine if cygwin is added to PATH
+  win_shell: |
+    $Env:Path
+  register: validatecygpath
+
+- name: Print previous step result
+  debug:
+    var: validatecygpath
+    verbosity: 2
+
+- name: Append new value to PATH
+  win_environment:
+    name: path
+    value: "{{ item.winenvpath.cygwin_path + ';' + validatecygpath.stdout | regex_replace('[\r\
+      \n]*', '') }}"
+    state: present
+    level: machine
+  with_items: "{{ envpath }}"
+  when: not 'cygwin64' in validatecygpath.stdout
+
+- include: '{{get_proj_plfm_win}}/roles/prerequisites/handlers/rm_duplicate_winenvs.yml'
+
+#  - name: "Restart Windows"
+#    win_reboot:

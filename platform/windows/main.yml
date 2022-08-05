@@ -1,0 +1,69 @@
+- gather_facts: true
+  hosts: all
+  name: Installs/Upgrades products
+  vars:
+    get_proj_dir: '{{ lookup(''env'',''ANSIBLE_PROJ_ROOT_DIR'') }}'
+    get_proj_plfm_win: '{{ lookup(''env'',''ANSIBLE_PROJ_PLATFORM_WINDOWS'') }}'
+    orenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/openroad/vars/main.yml'') | from_yaml }}'
+    lnrenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/loadnrun/vars/main.yml'') | from_yaml }}'
+    ingenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/common/vars/main.yml'') | from_yaml }}'
+  tags:
+   - always
+ 
+  tasks:
+
+  - include_tasks: '{{item}}'
+    name: extract data evars
+    with_items:
+      - 'roles/common/handlers/extractdata_or.yml'
+    tags:
+      - or
+      - lnr 
+      - never
+
+  - include_tasks: '{{item}}'
+    name: extract data evars
+    with_items:
+      - 'roles/common/handlers/extractdata_ing.yml'
+    tags:
+      - ing 
+      - never
+
+  - name: Copy ansible.log
+    command: 'mv {{get_proj_dir}}/logs/ansible.log {{get_proj_dir}}/logs/{{flnm_rmext}}_{{feature}}_{{ lookup("pipe", "date +%Y-%m-%d-%H:%M:%S") }}.log'
+    run_once: true
+    delegate_to: localhost
+    tags:
+     - always
+
+  - include_tasks: '{{item}}'
+    name: ping task
+    with_items:
+      - win_ping.yml
+    when: ansible_facts['os_family'] == "windows"
+    tags:
+      - always
+
+  - include_tasks: '{{item}}'
+    name: Install/upgrade OpenROAD
+    with_items:
+      - 'roles/openroad/tasks/main.yml'
+    tags:
+      - or
+      - never
+
+  - include_tasks: '{{item}}'
+    name: Install/upgrade Loadnrun
+    with_items:
+      - 'roles/loadnrun/tasks/main.yml'
+    tags:
+      - lnr
+      - never
+
+  - include_tasks: '{{item}}'
+    name: Install/upgrade Ingres
+    with_items:
+      - 'roles/ingres/tasks/main.yml'
+    tags:
+      - ingres
+      - never

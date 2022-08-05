@@ -1,0 +1,453 @@
+---
+#
+#
+# Set default fact values for registry stats
+
+- name: Stat registry for product and set default facts
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  tags: [defaultstats, statregistries, debug, never]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  tags: [defaultstats, statregistries, debug, never]
+
+# loadnrun 6.2 stats
+
+- name: Stat registry for Loadnrun6.2 64bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 6.2 (64-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr62, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com"  or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr62, statregistries]
+
+- name: Stat registry for Loadnrun6.2 64bit eval version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 6.2 (64-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr62, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr62, statregistries]
+
+- name: Stat registry for Loadnrun6.2 32bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 6.2 (32-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr62, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com"  or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr62, statregistries]
+
+- name: Stat registry for Loadnrun6.2 32bit eval version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 6.2 (32-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr62, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr62, statregistries]
+
+# loadnrun 11.1 stats
+
+- name: Stat registry for Loadnrun11.1 64bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 11.1 (64-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr111, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr111, statregistries]
+
+- name: Stat registry for Loadnrun11.1 64bit eval version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 11.1 (64-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr111, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr111, statregistries]
+
+- name: Stat registry for Loadnrun11.1 32bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 11.1 (32-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr111, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr111, statregistries]
+
+- name: Stat registry for Loadnrun11.1 32bit eval version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 11.1 (32-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr111, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.10" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr111, statregistries]
+
+# loadnrun11.2 stats
+
+- name: Stat registry for Loadnrun11.2 64bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 11.2 (64-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr111, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr112, statregistries]
+
+- name: Stat registry for Loadnrun11.2 64bit eval version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\ActianCorporation\Loadnrun 11.2 (64-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr112, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86_64" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr112, statregistries]
+
+- name: Stat registry for Loadnrun11.2 32bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 11.2 (32-bit)'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr112, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  tags: [lnr112, statregistries]
+
+- name: Stat registry for Loadnrun11.2 32bit version
+  win_reg_stat:
+    path: 'HKLM:\SOFTWARE\WOW6432Node\ActianCorporation\Loadnrun 11.2 (32-bit) Eval'
+    name: "{{ lnr_reg }}"
+  register: reg_val
+  loop:
+    - II_SYSTEM
+    - InstallationFolder
+    - ProductName
+    - ProductVersion
+    - ProductType
+    - Loadnrun_Command
+    - Loadnrun_Gateway
+    - Loadnrun_Server_Suffix
+    - PRODUCTCODE
+  loop_control:
+    loop_var: lnr_reg
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr112, statregistries]
+
+- set_fact:
+    II_SYSTEM: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "II_SYSTEM") | map(attribute="value") | list }}'
+    InstallationFolder: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "InstallationFolder") | map(attribute="value") | list }}'
+    ProductName: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductName") | map(attribute="value") | list }}'
+    ProductVersion: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductVersion") | map(attribute="value") | list }}'
+    ProductType: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "ProductType") | map(attribute="value") | list }}'
+    Loadnrun_Command: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Command") | map(attribute="value") | list }}'
+    Loadnrun_Gateway: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Gateway") | map(attribute="value") | list }}'
+    Loadnrun_Server_Suffix: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "Loadnrun_Server_Suffix") | map(attribute="value") | list }}'
+    PRODUCTCODE: '{{ reg_val.results | selectattr("lnr_reg", "equalto", "PRODUCTCODE") | map(attribute="value") | list }}'
+  when: hostvars[inventory_hostname]["productname"] == "loadnrun" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["arch"] == "x86" and hostvars[inventory_hostname]["os"] == "win" and hostvars[inventory_hostname]["edition"] == "eval"
+  tags: [lnr112, statregistries]
+
+- name: Debug for facts built using registry items
+  debug:
+    msg: "{{ lnr_reg }}"
+  with_items:
+    - "{{ II_SYSTEM }}"
+    - "{{ InstallationFolder }}"
+    - "{{ ProductName }}"
+    - "{{ ProductVersion }}"
+    - "{{ ProductType }}"
+    - "{{ Loadnrun_Command }}"
+    - "{{ Loadnrun_Gateway }}"
+    - "{{ Loadnrun_Server_Suffix }}"
+    - "{{ PRODUCTCODE }}"
+  tags:
+    - debug

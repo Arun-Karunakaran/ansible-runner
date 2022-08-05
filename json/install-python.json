@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Debug envpath",
+    "debug": {
+      "msg": "{{ item.value }}"
+    },
+    "with_dict": "{{ envpath }}"
+  },
+  {
+    "name": "Print only the envpath for python",
+    "debug": {
+      "msg": "{{ lookup('items', item.winenvpath.python_path) }}"
+    },
+    "with_items": "{{ envpath }}"
+  },
+  {
+    "name": "Determine if python is installed",
+    "win_command": "python --version",
+    "register": "validateinstaller",
+    "ignore_errors": true
+  },
+  {
+    "name": "Print previous step result",
+    "debug": {
+      "var": "validateinstaller",
+      "verbosity": 2
+    }
+  },
+  {
+    "name": "States the python installations",
+    "debug": {
+      "msg": "{{ validateinstaller.stdout }} is already installed"
+    },
+    "when": "validateinstaller.rc == 0"
+  },
+  {
+    "name": "Downloads the python installer",
+    "win_get_url": {
+      "url": "{{ item.windloadpath.python_dpath }}",
+      "dest": "C:\\temp\\{{ item.winfilenm.python_flnm }}"
+    },
+    "with_items": "{{ envpath }}",
+    "when": "validateinstaller.rc == 2"
+  },
+  {
+    "name": "Installs python on remote windows",
+    "raw": "C:\\temp\\{{ item.winfilenm.python_flnm }} /quiet InstallAllUsers=1 PrependPath=1 TargetDir=\"C:\\Python\" /log \"%WINDIR%\\Temp\\Python-Install.log\"",
+    "with_items": "{{ envpath }}",
+    "become": true,
+    "become_method": "runas",
+    "become_user": "Administrator",
+    "when": "validateinstaller.rc == 2"
+  },
+  {
+    "name": "Determine if python bin is added to PATH",
+    "win_shell": "$Env:Path\n",
+    "register": "validatepath"
+  },
+  {
+    "name": "Print previous step result",
+    "debug": {
+      "var": "validatepath",
+      "verbosity": 2
+    }
+  },
+  {
+    "name": "Append new value to PATH",
+    "win_environment": {
+      "name": "path",
+      "value": "{{ validatepath.stdout | regex_replace('[\r\n]*', '') + ';' + item.winenvpath.python_path }}",
+      "state": "present",
+      "level": "machine"
+    },
+    "with_items": "{{ envpath }}",
+    "when": "not 'Python' in validatepath.stdout"
+  },
+  {
+    "include_tasks": "{{get_proj_dir}}/roles/common/handlers/rm_duplicate_winenvs.yml"
+  }
+]

@@ -1,0 +1,60 @@
+# roles/common/handlers/showfileext.yml
+# This file removes the duplicate windows environment from PATH variable
+- name: Stat the HideFileExt value of registry
+  win_reg_stat:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: "{{ item }}"
+  register: reg_val
+  loop:
+    - HideFileExt
+  #  when: value == 'C:\Program Files\Ingres\or62xe\'
+
+- name: Debug the registry value
+  debug:
+    msg: "{{ reg_val }}"
+
+- name: fact for HideFileExt
+  set_fact:
+    HideFileExt: '{{ reg_val.results | selectattr("item", "equalto", "HideFileExt") | map(attribute="value") | list }}'
+
+- name: debug HideFileExt fact
+  debug:
+    var: hostvars[inventory_hostname]['HideFileExt'][0]
+    verbosity: 2
+
+    #- meta: end_play
+- name: Show file extentions on the node
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: HideFileExt
+    data: 0
+    type: dword
+  when: 'hostvars[inventory_hostname]["HideFileExt"][0] == 1'
+
+- pause:
+    seconds: 10
+
+- name: ReStat the HideFileExt value of registry
+  win_reg_stat:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: "{{ item }}"
+  register: reg_val
+  loop:
+    - HideFileExt
+  #  when: value == 'C:\Program Files\Ingres\or62xe\'
+
+- name: ReDebug the registry value
+  debug:
+    msg: "{{ reg_val }}"
+
+- name: Refact for HideFileExt
+  set_fact:
+    HideFileExt: '{{ reg_val.results | selectattr("item", "equalto", "HideFileExt") | map(attribute="value") | list }}'
+
+    #- name: Restart Windows
+    #win_reboot:
+    #when: 'hostvars[inventory_hostname]["HideFileExt"][0] == 0'
+
+- pause:
+    seconds: 10
+

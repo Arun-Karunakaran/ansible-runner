@@ -1,0 +1,5 @@
+- hosts: all
+  name: Ping
+  tasks:
+  - name: ping
+    win_ping: null

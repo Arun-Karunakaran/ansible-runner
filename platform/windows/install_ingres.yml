@@ -1,0 +1,110 @@
+- gather_facts: true
+  hosts: all
+  name: installs openroad
+  vars:
+    get_proj_dir: '{{ lookup(''env'',''ANSIBLE_PROJ_ROOT_DIR'') }}'
+    get_proj_plfm_win: '{{ lookup(''env'',''ANSIBLE_PROJ_PLATFORM_WINDOWS'') }}'
+    lnrenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/loadnrun/vars/main.yml'') | from_yaml }}'
+    orenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/openroad/vars/main.yml'') | from_yaml }}'
+    ingenvpath: '{{ lookup(''file'', ''{{get_proj_plfm_win}}/roles/common/vars/main.yml'') | from_yaml }}'
+    # os_environment:
+    #   - key: ANSIBLE_RUN_TAGS
+    #     value: "{{hostvars[inventory_hostname]['prodcurrversion']}},install"
+    #   - key: ANSIBLE_SKIP_TAGS
+    #     value: debug,installoptions
+  tags:
+   - always
+
+  tasks:
+
+  - include_tasks: '{{item}}'
+    name: extract data evars
+    with_items:
+      - 'roles/common/handlers/extractdata_ing.yml'
+
+  - name: Copy ansible.log
+    command: 'mv {{get_proj_dir}}/logs/ansible.log {{get_proj_dir}}/logs/{{flnm_rmext}}_{{feature}}_{{ lookup("pipe", "date +%Y-%m-%d-%H:%M:%S") }}.log'
+    run_once: true
+    delegate_to: localhost
+    tags:
+     - always
+
+  - include_tasks: '{{item}}'
+    name: ping task
+    with_items:
+      - win_ping.yml
+    when: ansible_facts['os_family'] == "windows"
+    tags:
+      - always
+
+  # - name: map product short name
+  #   set_fact:
+  #     productshortname: "or"
+  #   when: hostvars[inventory_hostname]['productname'] == 'openroad'
+
+  # - name: map tag names
+  #   set_fact: 
+  #     prodcurrversion: "{{hostvars[inventory_hostname]['productshortname']}}{{hostvars[inventory_hostname]['majorversionno']}}{{hostvars[inventory_hostname]['minorversionno'].split('0').0}}"
+
+  # - debug:
+  #     msg: "{{hostvars[inventory_hostname]['prodcurrversion']}}
+  #           {{ansible_skip_tags}}"
+  #   tags:
+  #    - debug
+
+  # - name: customize /etc/environment
+  #   become: true
+  #   become_method: sudo
+  #   become_user: awx
+  #   lineinfile:
+  #     path: "/etc/environment"
+  #     state: present
+  #     regexp: "^{{ item.key }}="
+  #     line: "{{ item.key }}={{ item.value }}"
+  #   with_items: "{{ os_environment }}"
+
+  # - meta: end_play
+
+  # - name: set run tags in config
+  #   command: python3 -c "import runnerapi; runnerapi.setconfigtags('{{hostvars[inventory_hostname]['prodcurrversion']}}, install')"
+  #   args:
+  #     chdir: "{{get_proj_dir}}"
+  #   delegate_to: localhost
+  #   register: results
+  #   tags:
+  #     - always
+
+  # - name: set skip tags in config
+  #   command: python3 -c "import runnerapi; runnerapi.setconfigskiptags('debug, installoptions')"
+  #   args:
+  #     chdir: "{{get_proj_dir}}"
+  #   delegate_to: localhost
+  #   register: results
+  #   tags:
+  #     - always
+
+  # - name: set run tags in config
+  #   shell: export ANSIBLE_RUN_TAGS={{hostvars[inventory_hostname]['prodcurrversion']}},install
+  #   args:
+  #     chdir: "{{get_proj_dir}}"
+  #   delegate_to: localhost
+  #   register: results
+  #   tags:
+  #     - always
+
+  # - name: set skip tags in config
+  #   shell: "echo $ANSIBLE_RUN_TAGS"
+  #   environment:
+  #     ANSIBLE_RUN_TAGS: or112,install
+  #   delegate_to: localhost
+  #   register: results
+  #   tags:
+  #     - always
+
+  - fail: 
+      msg: "feature name : '{{feature}}' of ActianX is not available for installation"
+    when: ('{{feature}}' not in ('fullinstall'))
+
+  - name: Role for installing Ingres
+    import_role:
+      name: roles/ingres

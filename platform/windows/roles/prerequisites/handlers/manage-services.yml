@@ -1,0 +1,19 @@
+- name: Stop tomcat as a service
+  raw: net stop tomcat8
+  register: command_result
+  become: true
+  become_method: runas
+  become_user: Administrator
+  ignore_errors: true
+  tags: 
+  - tomcat
+
+- name: Start tomcat as a service
+  raw: net start tomcat8
+  register: command_result
+  become: true
+  become_method: runas
+  become_user: Administrator
+  tags: 
+  - tomcat
+

@@ -1,0 +1,62 @@
+# windows
+[win10hosts]
+usau-or11-cl ansible_host=10.5.71.115 ansible_password=P@ssw0rdP@ssw0rd
+usau-or-dlw10 ansible_host=10.5.70.161 ansible_password=P@ssw0rdP@ssw0rd
+tcor11-win10 ansible_host=10.5.70.81 ansible_password=P@ssw0rdP@ssw0rd
+usau-eatest ansible_host=10.5.66.186 ansible_password=P@ssw0rdP@ssw0rd
+[win11hosts]
+#
+[win16hosts]
+#
+[win19hosts]
+or11-win19 ansible_host=10.5.67.145 ansible_password=P@ssw0rd
+[win21hosts]
+#
+[winhosts:children]
+win10hosts
+win11hosts
+win16hosts
+win19hosts
+win21hosts
+[winhosts:vars]
+ansible_port=5986
+ansible_connection=winrm
+ansible_winrm_transport=basic
+ansible_winrm_server_cert_validation=ignore
+
+# linux
+[rhel7hosts]
+#usau-bhrt-01 ansible_host=10.5.67.166 ansible_password=1ngres
+[rhel8hosts]
+#
+[centos8hosts]
+#
+[ubuntu18hosts]
+#
+[ubuntu20hosts]
+#
+[linuxhosts:children]
+rhel7hosts
+rhel8hosts
+centos8hosts
+ubuntu18hosts
+ubuntu20hosts
+[linuxhosts:vars]
+#
+ansible_host_key_checking=False
+
+# unix
+[solarisx86hosts]
+#
+[solarissparchosts]
+#
+[aixhosts]
+#
+[unixhosts:children]
+solarissparchosts
+solarisx86hosts
+aixhosts
+[unixhosts:vars]
+#
+[all:vars]
+ansible_user=ingres

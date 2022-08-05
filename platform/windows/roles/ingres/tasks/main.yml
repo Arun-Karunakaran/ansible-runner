@@ -1,0 +1,124 @@
+---
+# -----
+#
+# - debug:
+#     msg: "{{ansible_run_tags}} - {{ansible_skip_tags}}"
+
+# - meta: end_play
+
+- include_tasks: '{{get_proj_plfm_win}}/roles/common/handlers/extractdata_or.yml'
+  tags: 
+    - always
+
+- name: Debug envpath
+  debug:
+    msg: "{{ item.value }}"
+  with_dict: "{{ orenvpath }}"
+  tags:
+    - debug
+
+- name: Determine if openroad is installed
+  win_shell: openroad
+  register: validateinstaller
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  ignore_errors: true
+  when: hostvars[inventory_hostname]["productname"] == "openroad"
+  tags: 
+    - always
+
+- name: Print previous step result
+  debug:
+    var: validateinstaller
+    verbosity: 2
+  tags:
+    - debug
+
+- name: States the openroad installations
+  debug:
+    msg: "An OpenRoad version is already installed"
+  when: validateinstaller.rc == 0 and hostvars[inventory_hostname]["productname"] == "openroad"
+  tags: 
+    - always
+
+- name: Check for existing  installation from registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/openroad/meta/collect_registries_openroad.yml'
+  tags: 
+    - statregistries
+
+- name: Extract patchno
+  set_fact:
+    or_upgrade_patchno: '{{ hostvars[inventory_hostname]["edition"].split("p").1 }}'
+    or_current_patchno: '{{ hostvars[inventory_hostname]["PACKAGE_PATCHNO"][0] }}'
+  when: hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") and hostvars[inventory_hostname]["productname"] == "openroad"
+
+- debug:
+    msg: "{{ item }}"
+  with_items:
+    - "{{ or_upgrade_patchno }}"
+    - "{{ or_current_patchno }}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'] != "[AnsibleUndefined]"
+  tags:
+    - debug
+
+- name: Verify SA/Net already installed
+  include_tasks: '{{get_proj_plfm_win}}/roles/openroad/test/verify_sanet.yml'
+  tags:
+    - always
+
+# - name: Compare the SA/Net installed patch with current patch for upgrade 
+#   debug:
+#     msg: "The current installed patch is {{hostvars[inventory_hostname]['PACKAGE_PATCHNO']}} will be upgrade to {{hostvars[inventory_hostname]['or_upgrade_patchno']}}"
+#     when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"]|int < hostvars[inventory_hostname]['or_upgrade_patchno']|int
+#   tags:
+#     - patchupgrade
+
+- name: uninstalls the product SA/Net previously installed
+  raw: msiexec.exe /qn /x "{{ hostvars[inventory_hostname]['PRODUCTCODE'][0] }}"
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  tags: [install, cleaninstall]
+
+
+- name: ReCheck for product installation in registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/openroad/meta/collect_registries_openroad.yml'
+  tags: 
+    - statregistries
+    
+- name: copies '{{filename}}' to remote node 
+  win_copy: 
+    src: '/mnt/{{hostvars[inventory_hostname]["file_path"]}}/{{filename}}'
+    dest: C:\temp\
+  tags:
+    - always
+
+- win_find:
+    paths: C:\temp\
+    patterns: '*.zip'
+  register: zipresult
+  tags: 
+    - debug
+
+- name: Verify for .zip files
+  fail:
+    msg: "No files found."
+  when: zipresult.matched == 0
+  tags: 
+    - debug
+
+- name: Unzips the '{{filename}}' on remote node
+  win_unzip:
+    src: C:\temp\{{filename}}
+    dest: C:\temp\
+    delete_archive: yes
+  tags:
+    - always
+
+- name: deploy tasks
+  include_tasks: '{{get_proj_plfm_win}}/roles/openroad/handlers/deploy_handlers_openroad_{{feature}}.yml'
+
+
+#  - name: "Restart Windows"
+#    win_reboot:

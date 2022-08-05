@@ -1,0 +1,27 @@
+# This file contaisn all extrnal vars used for openroad
+winenvpath:
+  or620_64bit_sanet_path: "C:\\Program Files\\Ingres\\or62xe\\"
+  or620_32bit_sanet_path: "C:\\Program Files (x86)\\Ingres\\or62xc\\"
+
+  or111_32bit_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXI\\"
+  or111_32bit_beta_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXK\\"
+  or111_32bit_eval_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXL\\"
+  or111_64bit_sanet_path: "C:\\Program Files\\Ingres\\ingresXG\\"
+  or111_64bit_beta_sanet_path: "C:\\Program Files\\Ingres\\ingresXM\\"
+  or111_64bit_eval_sanet_path: "C:\\Program Files\\Ingres\\ingresXN\\"
+
+  or112_32bit_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXJ\\"
+  or112_32bit_beta_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXO\\"
+  or112_32bit_eval_sanet_path: "C:\\Program Files (x86)\\Ingres\\ingresXP\\"
+  or112_64bit_sanet_path: "C:\\Program Files\\Ingres\\ingresXH\\"
+  or112_64bit_beta_sanet_path: "C:\\Program Files\\Ingres\\ingresXQ\\"
+  or112_64bit_eval_sanet_path: "C:\\Program Files\\Ingres\\ingresXR\\"
+OpenROAD_installer:
+  or62_a64win_OR_path: "/mnt/win/or620/a64.win/"
+  or62_a64win_LNR_path: "/mnt/win/or620/a64.win/"
+  or62_intw32_OR_path: "/mnt/win/or620/int.w32/"
+  or62_intw32_LNR_path: "/mnt/win/or620/int.w32/"
+  or112_a64win_OR:
+  or112_a64win_LNR:
+  or112_intw32_OR:
+  or112_intw32_LNR:

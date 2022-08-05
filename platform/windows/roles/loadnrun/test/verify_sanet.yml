@@ -1,0 +1,44 @@
+---
+#
+#
+- name: Extract sanetpath
+  set_fact:
+    lnr111_32bit_sanet_path: '{{ item.winenvpath.lnr111_32bit_sanet_path }}'
+    lnr111_64bit_sanet_path: '{{ item.winenvpath.lnr111_64bit_sanet_path }}'
+    lnr112_32bit_sanet_path: '{{ item.winenvpath.lnr112_32bit_sanet_path }}'
+    lnr112_64bit_sanet_path: '{{ item.winenvpath.lnr112_64bit_sanet_path }}'
+  with_items:
+    - "{{ lnrenvpath }}"
+  tags:
+    - always
+    
+# LoadnRun 11.1
+
+- name: Check whether an LoadnRun11.1 32bit is already installed
+  debug:
+    msg: "LoadnRun 11.1 32bit patch {{ or_current_patchno }} is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr111_32bit_sanet_path']
+  tags:
+    - lnr111
+    
+- name: Check whether an LoadnRun11.1 64bit is already installed
+  debug:
+    msg: "LoadnRun 11.1 64bit patch {{ or_current_patchno }} is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr111_64bit_sanet_path']
+  tags:
+    - lnr111
+# LoadnRun 11.2
+
+- name: Check whether an LoadnRun11.2 32bit is already installed
+  debug:
+    msg: "LoadnRun 11.2 32bit patch {{ or_current_patchno }} is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr112_32bit_sanet_path']
+  tags:
+    - lnr112
+
+- name: Check whether an LoadnRun11.2 64bit is already installed
+  debug:
+    msg: "LoadnRun 11.2 64bit patch {{ or_current_patchno }} is already installed in {{hostvars[inventory_hostname]['II_SYSTEM'][0]}}"
+  when: hostvars[inventory_hostname]['II_SYSTEM'][0] == hostvars[inventory_hostname]['lnr112_64bit_sanet_path']
+  tags:
+    - lnr112

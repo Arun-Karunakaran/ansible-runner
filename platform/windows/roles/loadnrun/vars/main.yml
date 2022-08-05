@@ -1,0 +1,6 @@
+# name: Contains all external vars used for loadnrun
+winenvpath:
+  lnr111_32bit_sanet_path: "C:\\Program Files (x86)\\Actian\\OpenROAD\\Loadnrun111\\"
+  lnr111_64bit_sanet_path: "C:\\Program Files\\Actian\\OpenROAD\\Loadnrun111\\"
+  lnr112_32bit_sanet_path: "C:\\Program Files (x86)\\Actian\\OpenROAD\\Loadnrun112\\"
+  lnr112_64bit_sanet_path: "C:\\Program Files\\Actian\\OpenROAD\\Loadnrun112\\"

@@ -1,0 +1,276 @@
+---
+# #####################################install / uninstall and reinstall handlers for sanet
+# Installation logic
+- name: Installs "{{ filename.split('-').0 }} 6 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Upgrades to "{{ filename.split('-').0 }} 6 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Installs "{{ filename.split('-').0 }} 6 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Upgrade to "{{ filename.split('-').0 }} 6 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Installs "{{ filename.split('-').0 }} 11 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Upgrade to "{{ filename.split('-').0 }} 11 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Installs "{{ filename.split('-').0 }} 11 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, install]
+
+- name: Upgrade to "{{ filename.split('-').0 }} 11 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: installmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, install]
+
+# - name: ReCheck for product installation in registry and store the output
+#   include_tasks: '{{get_proj_dir}}roles/common/handlers/collect_registries_loadnrun.yml'
+
+# - name: Print success message status of No/Net installation using ormsiexec
+#   debug:
+#     msg: 
+#      - 'Able to Successfully install {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition: {{hostvars[inventory_hostname]["edition"]}} , Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - '{{installmsg.stdout}}'
+#      - '{{installmsg.stdout_lines}}'
+#   when: installmsg.rc == 0
+#   tags:
+#     - install
+
+# - name: Print Failure message status of No/Net installation using ormsiexec
+#   fail:
+#     msg: 
+#      - 'Failed to install {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition: {{hostvars[inventory_hostname]["edition"]}} , Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - 'Failed with error lines: {{installmsg.stderr_lines}}'
+#   when: installmsg.rc != 0
+#   tags:
+#     - install
+
+# uninstallation logic
+- name: ReCheck for product installation in registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/meta/collect_registries_loadnrun.yml'
+  tags: [never, statregistries, install, upgrade]
+
+- name: UnInstalls "{{ filename.split('-').0 }} 6 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet.rsp /uninstall
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: uninstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, uninstall, installoptions]
+
+- name: UnInstalls "{{ filename.split('-').0 }} 6 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet_eval.rsp /uninstall
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: uninstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, uninstall, installoptions]
+
+- name: UnInstalls "{{ filename.split('-').0 }} 11 com/patch edition - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet.rsp /uninstall
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: uninstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, uninstall, installoptions]
+
+- name: UnInstalls "{{ filename.split('-').0 }} 11 eval edition" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet_eval.rsp /uninstall
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: uninstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] != "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, uninstall, installoptions]
+
+# - name: ReCheck for product uninstallation in registry and store the output
+#   include_tasks: '{{get_proj_dir}}roles/common/handlers/collect_registries_loadnrun.yml'
+
+# - name: Print success message status of No/Net uninstallation using ormsiexec
+#   debug:
+#     msg: 
+#      - 'Able to Successfully uninstall {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition: {{hostvars[inventory_hostname]["edition"]}}, Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - '{{uninstallmsg.stdout}}'
+#      - '{{uninstallmsg.stdout_lines}}'
+#   when: uninstallmsg.rc == 0
+#   tags:
+#     - uninstall
+
+# - name: Print Failure message status of No/Net uninstallation using ormsiexec
+#   fail:
+#     msg: 
+#      - 'Failed to uninstall {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition: {{hostvars[inventory_hostname]["edition"]}} , Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - 'Failed with error lines: {{uninstallmsg.stderr_lines}}'
+#   when: uninstallmsg.rc != 0
+#   tags:
+#     - uninstall
+
+# reinstallation logic
+- name: ReCheck for product installation in registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/meta/collect_registries_loadnrun.yml'
+  tags: [never,statregistries, uninstall]
+
+- name: ReInstalls "{{ filename.split('-').0 }} 6 com/patch - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: reinstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, reinstall, installoptions]
+
+- name: ReInstalls "{{ filename.split('-').0 }} 6 eval" No/Net installer on remote windows
+  win_command: ormsiexec.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: reinstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "6.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, reinstall, installoptions]
+
+- name: ReInstalls "{{ filename.split('-').0 }} 11 com/patch - {{ filename.split('-').4 }}" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: reinstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and ( hostvars[inventory_hostname]["edition"] == "com" or hostvars[inventory_hostname]["edition"] | regex_search("^p[0-9][0-9][0-9][0-9][0-9]") )
+  ignore_errors: true
+  tags: [never, reinstall, installoptions]
+
+- name: ReInstalls "{{ filename.split('-').0 }} 11 eval" No/Net installer on remote windows
+  win_command: ormsiexec11.bat *nonet_eval.rsp /install
+  args:
+    chdir: C:\temp\{{ filename.split('.zip').0 }}\
+  register: reinstallmsg
+  become: true
+  become_method: runas
+  become_user: "{{ as_user }}"
+  when: hostvars[inventory_hostname]["PACKAGE_PATCHNO"] == "[AnsibleUndefined]" and hostvars[inventory_hostname]["versionno"] == "11.20" and hostvars[inventory_hostname]["edition"] == "eval"
+  ignore_errors: true
+  tags: [never, reinstall, installoptions]
+
+# - name: ReCheck for product reinstallation in registry and store the output
+#   include_tasks: '{{get_proj_dir}}roles/common/handlers/collect_registries_loadnrun.yml'
+
+# - name: Print success message status of No/Net reinstallation using ormsiexec
+#   debug:
+#     msg: 
+#      - 'Able to Successfully reinstall {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition: {{hostvars[inventory_hostname]["edition"]}}, Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - '{{reinstallmsg.stdout}}'
+#      - '{{reinstallmsg.stdout_lines}}'  
+#   when: reinstallmsg.rc == 0
+#   tags:
+#     - reinstall
+
+# - name: Print Failure message status of No/Net reinstallation using ormsiexec
+#   fail:
+#     msg: 
+#      - 'Failed to reinstall {{hostvars[inventory_hostname]["productname"]}} {{hostvars[inventory_hostname]["versionno"]}} {{hostvars[inventory_hostname]["arch"]}} No/Net of edition {{hostvars[inventory_hostname]["edition"]}} , Buildno: {{hostvars[inventory_hostname]["buildno"]}} on {{hostvars[inventory_hostname]["ansible_env"]["COMPUTERNAME"]}}'
+#      - 'Failed with error lines: {{reinstallmsg.stderr_lines}}'
+#   when: reinstallmsg.rc != 0
+#   tags:
+#     - reinstall
+
+- name: ReCheck for product installation in registry and store the output
+  include_tasks: '{{get_proj_plfm_win}}/roles/loadnrun/meta/collect_registries_loadnrun.yml'
+  tags: [never, reinstall, installoptions]
+
+

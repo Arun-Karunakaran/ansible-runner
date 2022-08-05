@@ -1,0 +1,59 @@
+---
+#
+#
+- name: Extract filename into parts and map it to vars
+  set_fact:
+    productname: "{{ filename.split('-').0 }}"
+    majorversionno: "{{ filename.split('-').1.split('.').0}}"
+    minorversionno: "{{ filename.split('-').1.split('.').1}}.{{ filename.split('-').1.split('.').2}}"
+    versionno: "{{ filename.split('-').1.split('.').0}}.{{ filename.split('-').1.split('.').1}}.{{ filename.split('-').1.split('.').2}}"
+    # buildno: "{{ filename.split('-').1.split('.').2}}"
+    os: "{{ filename.split('-').4 }}"
+    arch: "{{ filename.split('-').5 }}"
+    edition: "{{ filename.split('-').3 }}"
+    release: "{{ filename.split('-').6.split('.').0 }}"
+    flnm_rmext: "{{ filename.split('.zip').0 }}"
+  tags:
+    - always
+
+- name: Extract path
+  command: python3 '{{get_proj_plfm_win}}'/roles/common/handlers/parsepath.py '{{filepath}}'
+  delegate_to: localhost
+  register: results
+  tags:
+    - always
+
+- name: save filepath
+  set_fact:
+    file_path: '{{ results.stdout }}'
+    cacheable: yes
+  tags:
+    - always
+
+- name: Debug filepath
+  debug:
+    msg: "{{ hostvars[inventory_hostname]['file_path'] }}"
+  tags:
+    - debug
+
+- name: Fail if \u0007 is found
+  fail:
+   msg: "wrong format of --extra-args has been passed. Change 'key=value' format to {'key':'value'}"
+  when: hostvars[inventory_hostname]['file_path'] == "OpenROAD/or1120\u000764.win" or hostvars[inventory_hostname]['file_path'] == "OpenROAD/or1120\u000764.lnx"
+  tags:
+    - debug
+    #- name: Extract path on condition
+    #  command: python3 '{{get_proj_plfm_win}}'roles/common/handlers/parsepath.py '{{ results.stdout_lines[0] }}'
+    #  delegate_to: localhost
+    #  register: results2
+
+
+    #- name: Reset the fact based on condition above
+    #  set_fact:
+    #    file_path1: '{{results2.stdout_lines[0]}}'
+    #    cacheable: yes
+    #  when: hostvars[inventory_hostname]['file_path'] == "OpenROAD/or620\u000764.win" or hostvars[inventory_hostname]['file_path'] == "OpenROAD/or620\u000764.lnx"
+
+    #- name: Debug filepath1
+    #  debug:
+    #    msg: "{{ hostvars[inventory_hostname]['file_path1'] }}"

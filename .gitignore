@@ -1,0 +1,8 @@
+logs/
+__pycache__/
+artifacts/
+platform/windows/artifacts/
+adhocvars.ini
+ansible_config_magic_params.txt
+demo/
+

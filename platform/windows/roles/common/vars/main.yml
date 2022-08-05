@@ -1,0 +1,6 @@
+# This file contaisn all extrnal vars used in tasks  vars/external_vars.yml
+ingsetenv:
+  II_TIMEZONE_NAME: India
+  II_DATE_FORMAT: US
+  II_CHARSET: UTF8
+  II_INSTALLATION: I1

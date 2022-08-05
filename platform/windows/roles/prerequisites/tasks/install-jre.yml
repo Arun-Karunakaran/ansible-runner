@@ -1,0 +1,87 @@
+---
+# roles/prerequisites/tasks/install-jre.yml
+# This file installs required jre version on windows
+
+- name: Debug envpath
+  debug:
+    msg: "{{ item.value }}"
+  with_dict: "{{ envpath }}"
+
+- name: Print only the envpath for java jre
+  debug:
+    msg: "{{ lookup('items', item.winenvpath.java_path) }}"
+  with_items: "{{ envpath }}"
+
+- name: Determine if java jre8 is installed
+  win_command: java -version
+  register: validateinstaller
+  ignore_errors: true
+#  when: 'is not recognized' in validatecygcheck.stderr
+
+- name: Print previous step result
+  debug:
+    var: validateinstaller
+    verbosity: 2
+
+- name: States the jre installations
+  debug:
+    msg: "{{ validateinstaller.stdout }} is already installed"
+  when: validateinstaller.rc == 1 or ( validateinstaller.rc == 0 )
+
+- name: copies java jre to remote windows node
+  win_copy:
+    src: "{{ item.winfilepath.java_ipath }}"
+    dest: C:\temp
+  with_items: "{{ envpath }}"
+  when: validateinstaller.rc == 2 or ( validateinstaller.failed == true )
+ 
+- name: Installs jre on remote windows
+  raw: 'C:\temp\{{ item.winfilenm.jre_flnm }} /s'
+  with_items: "{{ envpath }}"
+  become: true
+  become_method: runas
+  become_user: Administrator
+  when: validateinstaller.rc == 2
+
+- name: Determine if jre_home bin is added to PATH
+  win_shell: |
+    $Env:Path
+  register: validatepath
+
+- name: Print previous step result
+  debug:
+    var: validatepath
+    verbosity: 2
+
+- name: Append new value to PATH
+  win_environment:
+    name: path
+    value: "{{ validatepath.stdout | regex_replace('[\r\n]*', '') + ';' + item.winenvpath.java_path }}"
+    state: present
+    level: machine
+  with_items: "{{ envpath }}"
+  when: not 'JRE_HOME' in validatepath.stdout
+
+- name: Determine if Jre home is added to system env variables
+  win_shell: |
+    $Env:JRE_HOME
+  register: validatepath
+
+- name: Print previous step result
+  debug:
+    var: validatepath
+    verbosity: 2
+
+- name: Append new value to jre home
+  win_environment:
+    name: JRE_HOME
+    value: "{{ validatepath.stdout | regex_replace('[\r\n]*', '') + item.winenvpath.JRE_HOME }}"
+    state: present
+    level: machine
+  with_items: "{{ envpath }}"
+  when: not 'Java' in validatepath.stdout
+
+- include: '{{get_proj_plfm_win}}/roles/prerequisites/handlers/rm_duplicate_winenvs.yml'
+
+#  - name: "Restart Windows"
+#    win_reboot:

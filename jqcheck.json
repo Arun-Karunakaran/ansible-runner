@@ -1,0 +1,82 @@
+[
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "II_SYSTEM",
+                "raw_value": "C:\\Program Files\\Ingres\\or62xe\\",
+                "type": "REG_SZ",
+                "value": "C:\\Program Files\\Ingres\\or62xe\\"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "InstallationFolder",
+                "raw_value": "C:\\Program Files\\Ingres\\or62xe\\",
+                "type": "REG_SZ",
+                "value": "C:\\Program Files\\Ingres\\or62xe\\"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "PACKAGE_BUILDNO",
+                "raw_value": "15216",
+                "type": "REG_SZ",
+                "value": "15216"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "PACKAGE_PATCHNO",
+                "raw_value": "15707",
+                "type": "REG_SZ",
+                "value": "15707"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "PACKAGE_VERSION_MAJOR",
+                "raw_value": "6",
+                "type": "REG_SZ",
+                "value": "6"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "PACKAGE_VERSION_MINOR",
+                "raw_value": "20",
+                "type": "REG_SZ",
+                "value": "20"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "SOURCE_NAME",
+                "raw_value": "6.2 (64-bit)",
+                "type": "REG_SZ",
+                "value": "6.2 (64-bit)"
+            },
+            {
+                "ansible_loop_var": "item",
+                "changed": false,
+                "exists": true,
+                "failed": false,
+                "item": "Uninstall",
+                "raw_value": "C:\\Windows\\system32\\msiexec.exe /x {32C6B0FE-6F05-471D-8271-897D15D1C35F}",
+                "type": "REG_SZ",
+                "value": "C:\\Windows\\system32\\msiexec.exe /x {32C6B0FE-6F05-471D-8271-897D15D1C35F}"
+            }
+        ]
